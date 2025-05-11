@@ -13,7 +13,7 @@ import os
 load_dotenv()  # Load from .env file
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-#creds_json = os.getenv("GOOGLE_CREDENTIALS")
+creds_json = os.getenv("GOOGLE_CREDENTIALS")
 
 app = Flask(__name__)
 
@@ -23,13 +23,13 @@ app = Flask(__name__)
 
 # Google Sheets setup
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-# if creds_json:
-#     creds_dict = json.loads(creds_json)
-#     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-# else:
-#     raise Exception("Missing GOOGLE_CREDENTIALS environment variable")
+if creds_json:
+    creds_dict = json.loads(creds_json)
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+else:
+    raise Exception("Missing GOOGLE_CREDENTIALS environment variable")
 #creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-#client = gspread.authorize(creds)
+client = gspread.authorize(creds)
 
 # Your target sheet
 dest_sheet = client.open("Online Clients Weight Analysis NEW (Responses)").worksheet("Image Data")
