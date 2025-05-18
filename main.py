@@ -71,13 +71,19 @@ Medical Text:
         )
 
         ai_response = completion['choices'][0]['message']['content']
-        
+
+        # Clean the code block markers
+        if ai_response.startswith("```"):
+            ai_response = ai_response.strip("`")  # remove all backticks
+            ai_response = ai_response.split("\n", 1)[1]  # remove `json` line
+            ai_response = ai_response.rsplit("\n", 1)[0]  # remove ending ```
+
         # Try to parse and return the JSON
         try:
             structured_data = json.loads(ai_response)
             return structured_data
         except json.JSONDecodeError:
-            return {"error": "Failed to parse AI response", "raw": ai_response}
+            return {"error": "Failed to parse cleaned AI response", "raw": ai_response}
 
     except Exception as e:
         return {"error": str(e)}
