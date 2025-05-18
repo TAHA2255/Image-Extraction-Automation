@@ -39,7 +39,13 @@ dest_sheet = client.open("Online Clients Weight Analysis NEW (Responses)").works
 def extract_text_from_drive_link(image_url):
     try:
         # Step 1: Download image from Drive
-        file_id = image_url.split("/d/")[1].split("/")[0]
+        #file_id = image_url.split("/d/")[1].split("/")[0]
+        if "/d/" in image_url:
+            file_id = image_url.split("/d/")[1].split("/")[0]
+        elif "id=" in image_url:
+            file_id = image_url.split("id=")[1].split("&")[0]
+        else:
+            return {"error": "Invalid Google Drive link format", "url": image_url}
         direct_url = f"https://drive.google.com/uc?export=download&id={file_id}"
         response = requests.get(direct_url)
         img = Image.open(BytesIO(response.content))
